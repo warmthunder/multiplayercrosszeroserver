@@ -62,12 +62,6 @@ wss.on("connection", (ws,req) => {
     ws.id = req.url.split('?id=')[1];
     console.log(`${ws.id} has been assigned ${ws.player}`);
 
-    if(ws.player=="O"){
-    ws.send(JSON.stringify({ 
-            type: "wait",
-           }));
-    }
-    
     if(clients.length == 1){
         ws.send(JSON.stringify({
             type: "1player",
@@ -76,9 +70,18 @@ wss.on("connection", (ws,req) => {
     }
 
     else if(clients.length > 1){
-        ws.send(JSON.stringify({
+        wss.clients.forEach(client => {
+                if(client.readyState === WebSocket.OPEN){
+        client.send(JSON.stringify({
             type: "enough players"
+            
         }));
+    }})
+    }
+     if(ws.player=="O"){
+    ws.send(JSON.stringify({ 
+            type: "wait",
+           }));
     }
 
     ws.on("message", (msg) => {
