@@ -68,6 +68,19 @@ wss.on("connection", (ws,req) => {
            }));
     }
     
+    if(clients.length == 1){
+        ws.send(JSON.stringify({
+            type: "1player",
+            message: "Not your turn"
+        }));
+    }
+
+    else if(clients.length > 1){
+        ws.send(JSON.stringify({
+            type: "enough players"
+        }));
+    }
+
     ws.on("message", (msg) => {
         
         data = JSON.parse(msg.toString());
@@ -78,6 +91,7 @@ wss.on("connection", (ws,req) => {
         }));
         return;
         }
+        
         if(data.col == -1 || data.row == -1){
             return;
         }
